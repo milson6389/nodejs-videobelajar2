@@ -50,8 +50,60 @@ const addProduct = async (req) => {
   return addProduct;
 };
 
-const getProdcutList = async (request = "") => {
-  const products = await prismaClient.product.findMany({
+const getProdcutList = async (request) => {
+  const filters = [];
+  let order = "asc";
+
+  if (request.search && request.search !== "") {
+    filters.push({
+      OR: [
+        {
+          productTitle: {
+            contains: request.search,
+          },
+        },
+        {
+          productDesc: {
+            contains: request.search,
+          },
+        },
+        {
+          tutor: {
+            tutorTitle: {
+              contains: request.search,
+            },
+          },
+        },
+        {
+          tutor: {
+            user: {
+              fullName: {
+                contains: request.search,
+              },
+            },
+          },
+        },
+      ],
+    });
+  }
+  if (request.filter && request.filter !== "") {
+    filters.push({
+      categoryCode: {
+        contains: request.filter,
+      },
+    });
+  }
+  if (request.sort && request.sort !== "") {
+    order = request.sort;
+  }
+
+  const productList = await prismaClient.product.findMany({
+    orderBy: {
+      productTitle: order,
+    },
+    where: {
+      AND: filters,
+    },
     select: {
       productId: true,
       productTitle: true,
@@ -59,6 +111,7 @@ const getProdcutList = async (request = "") => {
       productDesc: true,
       productPrice: true,
       productThumbnail: true,
+      categoryCode: true,
       tutorId: true,
       tutor: {
         select: {
@@ -76,68 +129,7 @@ const getProdcutList = async (request = "") => {
       },
     },
   });
-
-  if (request !== "") {
-    const productList = await prismaClient.product.findMany({
-      where: {
-        OR: [
-          {
-            productTitle: {
-              contains: request,
-            },
-          },
-          {
-            productDesc: {
-              contains: request,
-            },
-          },
-          {
-            tutor: {
-              tutorTitle: {
-                contains: request,
-              },
-            },
-          },
-          {
-            tutor: {
-              user: {
-                fullName: {
-                  contains: request,
-                },
-              },
-            },
-          },
-        ],
-      },
-      select: {
-        productId: true,
-        productTitle: true,
-        productSummary: true,
-        productDesc: true,
-        productPrice: true,
-        productThumbnail: true,
-        categoryCode: true,
-        tutorId: true,
-        tutor: {
-          select: {
-            tutorTitle: true,
-            tutorDesc: true,
-            user: {
-              select: {
-                fullName: true,
-                email: true,
-                noHp: true,
-                profilePicture: true,
-              },
-            },
-          },
-        },
-      },
-    });
-    return productList;
-  }
-
-  return products;
+  return productList;
 };
 
 const getProductById = async (req) => {

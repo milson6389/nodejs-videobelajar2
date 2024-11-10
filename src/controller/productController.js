@@ -1,10 +1,5 @@
 import productService from "../service/productService.js";
 
-// BigInt.prototype.toJSON = function () {
-//   const int = Number.parseInt(this.toString());
-//   return int ?? this.toString();
-// };
-
 const addProduct = async (req, res, next) => {
   try {
     const result = await productService.addProduct(req);
@@ -16,13 +11,12 @@ const addProduct = async (req, res, next) => {
 
 const getProductList = async (req, res, next) => {
   try {
-    let keyword = "";
-    const query = req.query;
-    const params = Object.values(query);
-    if (params.length > 0) {
-      keyword = params[0];
-    }
-    const result = await productService.getProdcutList(keyword);
+    const request = {
+      search: req.query.search,
+      filter: req.query.filter,
+      sort: req.query.sort,
+    };
+    const result = await productService.getProdcutList(request);
     res.status(200).json(result);
   } catch (error) {
     next(error);
