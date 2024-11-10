@@ -1,0 +1,69 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+  userId BigInt @id @default(autoincrement())
+  fullName String @db.VarChar(100)
+  email String @db.VarChar(100) @unique
+  noHp String @db.VarChar(20) @unique
+  password String @db.VarChar(100)
+  profilePicture String? @db.LongText
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  tutor Tutor?
+
+  @@map("user")
+}
+
+model Tutor{
+  tutorId BigInt @id @default(autoincrement())
+  tutorTitle String @db.VarChar(150)
+  tutorDesc String? @db.LongText
+  userId BigInt @unique
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  user User @relation(fields: [userId], references: [userId])
+  products Product[]
+
+  @@map("tutor")
+}
+
+model ProductCategory{
+  productCategoryId BigInt @id @default(autoincrement())
+  categoryCode String @db.VarChar(10) @unique
+  categoryDesc String @db.VarChar(30)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  products Product[]
+
+  @@map("product_category")
+}
+
+model Product{
+  productId BigInt @id @default(autoincrement())
+  productTitle String @db.VarChar(100)
+  productSummary String? @db.VarChar(100)
+  productDesc String? @db.LongText
+  productPrice Float @db.Double
+  productThumbnail String? @db.LongText
+  tutorId BigInt
+  categoryCode String @db.VarChar(10)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  tutor Tutor @relation(fields: [tutorId], references: [tutorId])
+  productCategory ProductCategory @relation(fields: [categoryCode], references: [categoryCode])
+
+  @@map("product")
+}
