@@ -25,6 +25,7 @@ export const authMiddleware = async (req, res, next) => {
         email: true,
         noHp: true,
         profilePicture: true,
+        isVerified: true,
       },
     });
     if (!userExists) {

@@ -63,10 +63,41 @@ const userLogout = async (req, res, next) => {
   }
 };
 
+const getToken = async (req, res, next) => {
+  try {
+    const result = await userService.getToken(req.user);
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const verifyToken = async (req, res, next) => {
+  try {
+    const result = await userService.verifyToken(req.user, req.body.token);
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const verifyTokenByParameters = async (req, res, next) => {
+  try {
+    const tokenParam = req.params.token;
+    const result = await userService.verifyToken(req.user, tokenParam);
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   registerUser,
   getUserInfo,
   updateUserInfo,
   userLogin,
   userLogout,
+  getToken,
+  verifyToken,
+  verifyTokenByParameters,
 };
