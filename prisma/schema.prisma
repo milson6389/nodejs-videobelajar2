@@ -20,6 +20,8 @@ model User{
   noHp String @db.VarChar(20) @unique
   password String @db.VarChar(100)
   profilePicture String? @db.LongText
+  token String? @db.LongText
+  isVerified Boolean @default(false)
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
   tutor Tutor?
