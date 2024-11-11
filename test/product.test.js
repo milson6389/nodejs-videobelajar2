@@ -83,7 +83,7 @@ describe("GET /api/v1/product", () => {
     expect(result.status).toBe(200);
   });
   it("should be able search through product list", async () => {
-    const result = await supertest(web).get(`/api/v1/product?q=product`);
+    const result = await supertest(web).get(`/api/v1/product?search=product`);
     expect(result.status).toBe(200);
     expect(result.body[0].productTitle).toContain("product".toUpperCase());
   });

@@ -16,6 +16,10 @@ import { assetRouter } from "../routes/assetApi.js";
 
 dotenv.config();
 
+BigInt.prototype.toJSON = function () {
+  return Number(this.toString());
+};
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const web = express();

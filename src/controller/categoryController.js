@@ -1,10 +1,5 @@
 import categoryService from "../service/categoryService.js";
 
-BigInt.prototype.toJSON = function () {
-  const int = Number.parseInt(this.toString());
-  return int ?? this.toString();
-};
-
 const addCategory = async (req, res, next) => {
   try {
     const result = await categoryService.add(req.body);
@@ -42,7 +37,7 @@ const updateCategory = async (req, res, next) => {
 const deleteCategory = async (req, res, next) => {
   try {
     const categoryId = req.params.id;
-    const result = await categoryService.deleteCategory(Number(categoryId));
+    await categoryService.deleteCategory(Number(categoryId));
     res.status(200).json({
       msg: "Success Delete Product Category",
     });
