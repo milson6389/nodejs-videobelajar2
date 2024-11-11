@@ -2,7 +2,7 @@ import multer from "multer";
 import path from "path";
 import util from "util";
 import dotenv from "dotenv";
-import fs, { promises as fsPromises } from "fs";
+import fs from "fs";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { format } from "date-fns";
